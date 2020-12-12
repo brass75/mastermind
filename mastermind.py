@@ -8,21 +8,42 @@ DEFAULT_GUESSES = 10
 MAX_DIGITS = 6
 DEFAULT_DIGITS = 4
 
-def getHint(secret: str, guess: str) -> str:
-    cows = 0
-    bulls = 0
-    count = Counter(secret)
-    for i, c in enumerate(guess):
-        if i < len(secret) and secret[i] == c:
-            bulls += 1
-            if count[c]:
+class Guess:
+    def __init__(self, secret: str, guess: str):
+        cows = 0
+        bulls = 0
+        count = Counter(secret)
+        for i, c in enumerate(guess):
+            if i < len(secret) and secret[i] == c:
+                bulls += 1
+                if count[c]:
+                    count[c] -= 1
+                else:
+                    cows -= 1
+            elif c in count and count[c]:
+                cows += 1
                 count[c] -= 1
-            else:
-                cows -= 1
-        elif c in count and count[c]:
-            cows += 1
-            count[c] -= 1
-    return {'right': bulls, 'close': cows}
+        self.guess = guess
+        self.res = {'right': bulls, 'close': cows}
+
+    def __str__(self):
+        s = ''
+        s += 'X' * self.res['right']
+        s += 'O' * self.res['close']
+        s += '-' * (len(self.guess) - len(s))
+        s += ' ' + self.guess
+        return s
+
+    def isAWin(self):
+        return self.res['right'] == len(self.guess)
+    
+    @property
+    def right(self):
+        return self.res['right']
+
+    @property
+    def close(self):
+        return self.res['close']
 
 def game():
     guesses = 0
@@ -77,12 +98,12 @@ def game():
                 print (f"OK. {count} invalid guesses is too many. I'm outta here!")
                 sys.exit(1)
             continue
-        result = getHint(secret, guess)
-        if result['right'] == digits:
+        result = Guess(secret, guess)
+        if result.isAWin():
             print(f"Congrats! You win! You guessed my secret number of {secret}!")
             return
         if (guesses := guesses -1):
-            print(f"Not quite there yet. You have {result['right']} in the right place and {result['close']} are in the mix.")
+            print(f"{result}   Not quite there yet. You have {result.right} in the right place and {result.close} are in the mix.")
         else:
             print(f"YEAH!!! I WIN!!! You couldn't guess my secret number! It was {secret}")
             return
