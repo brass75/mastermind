@@ -90,7 +90,7 @@ def game():
     while True:
         read = input(f"You've got {guesses} left to guess my {digits} digit number. Type 'h' to see the history or let me know what your guess is.  ")
         if not read:
-            read = "You sure you want to quit (Y/n)?  "
+            read = input("You sure you want to quit (Y/n)?  ")
             if not read or read[0].lower != 'y':
                 print("OK. Goodbye! Nice playing with you!")
                 sys.exit(0)
