@@ -49,6 +49,7 @@ def game():
     guesses = 0
     digits = 0
     count = 0
+    history = []
     while guesses <= 0:
         read = input(f"How many guesses would you like? Please enter a number from 1 - {MAX_GUESSES} ({DEFAULT_GUESSES}) ")
         if not read:
@@ -83,12 +84,16 @@ def game():
     count = 0
     secret = str(random.randrange(10**(digits-1), 10**digits))
     while True:
-        read = input(f"You've got {guesses} left to guess my {digits} digit number. What's your guess?  ")
+        read = input(f"You've got {guesses} left to guess my {digits} digit number. Type 'h' to see the history or let me know what your guess is.  ")
         if not read:
             read = "You sure you want to quit (Y/n)?  "
             if not read or read[0].lower != 'y':
                 print("OK. Goodbye! Nice playing with you!")
                 sys.exit(0)
+            continue
+        if read.lower() == 'h':
+            for guess in history:
+                print (guess)
             continue
         try:
             int(read)
@@ -99,6 +104,7 @@ def game():
                 sys.exit(1)
             continue
         result = Guess(secret, guess)
+        history.append(result)
         if result.isAWin():
             print(f"Congrats! You win! You guessed my secret number of {secret}!")
             return
