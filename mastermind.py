@@ -92,9 +92,19 @@ def game():
                 sys.exit(0)
             continue
         if read.lower() == 'h':
-            for guess in history:
-                print (guess)
+            for i, guess in enumerate(history, 1):
+                print (f"{i}:\t{guess}")
             continue
+        if len(read.strip()) != digits:
+            if (count := count + 1) >= 3:
+                print (f"OK. {count} invalid guesses is too many. I'm outta here!")
+                sys.exit(1)
+            if len(read.strip()) < digits:
+                s = 'less'
+            else:
+                s = 'more'
+            print (f"Hey! {read.strip()!r} i {s} than {digits} digits. Please try again!")
+            continue            
         try:
             int(read)
             guess = read
@@ -102,6 +112,7 @@ def game():
             if (count := count + 1) >= 3:
                 print (f"OK. {count} invalid guesses is too many. I'm outta here!")
                 sys.exit(1)
+            print (f"Hey! {read.strip()!r} isn't a valid entry. Please try again!")
             continue
         result = Guess(secret, guess)
         history.append(result)
