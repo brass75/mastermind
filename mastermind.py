@@ -11,21 +11,22 @@ DEFAULT_DIGITS = 4
 
 class Guess:
     def __init__(self, secret: str, guess: str):
-        cows = 0
-        bulls = 0
+        close = 0
+        right = 0
         count = Counter(secret)
         for i, c in enumerate(guess):
             if i < len(secret) and secret[i] == c:
-                bulls += 1
+                right += 1
                 if count[c]:
                     count[c] -= 1
                 else:
-                    cows -= 1
+                    close -= 1
             elif c in count and count[c]:
-                cows += 1
+                close += 1
                 count[c] -= 1
+        self.length = len(secret)
         self.guess = guess
-        self.res = {'right': bulls, 'close': cows}
+        self.res = {'right': right, 'close': close}
 
     def __str__(self):
         s = ''
@@ -36,7 +37,7 @@ class Guess:
         return s
 
     def isAWin(self):
-        return self.res['right'] == len(self.guess)
+        return self.right == self.length
     
     @property
     def right(self):
