@@ -6,6 +6,7 @@ from collections import Counter
 MAX_GUESSES = 25
 DEFAULT_GUESSES = 10
 MAX_DIGITS = 6
+MIN_DIGITS = 2
 DEFAULT_DIGITS = 4
 
 class Guess:
@@ -67,7 +68,7 @@ def game():
     print(f"OK. So we're going to give you {guesses} to try to solve my number!")
     count = 0
     while digits <= 0:
-        read = input(f"How long a problem do you want? Please enter a number from 1 - {MAX_DIGITS} ({DEFAULT_DIGITS})  ")
+        read = input(f"How long a problem do you want? Please enter a number from {MIN_DIGITS} - {MAX_DIGITS} ({DEFAULT_DIGITS})  ")
         if not read:
             digits = DEFAULT_DIGITS
         else:
@@ -75,6 +76,9 @@ def game():
                 digits = int(read)
                 if digits > MAX_DIGITS:
                     print(f"Hey! I said you could go as high as {MAX_DIGITS}! {digits} is too much!")
+                    digits = 0
+                if digits < MIN_DIGITS:
+                    print(f"I'm sorry but {digits} is not long enough! It has to be at least {MIN_DIGITS} long.")
                     digits = 0
             except ValueError:
                 print(f"Hey! {read} is not a number!")
