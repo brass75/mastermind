@@ -19,6 +19,9 @@ import sys
 import random
 from collections import Counter
 
+MIN_VER = (3, 8)
+assert sys.version_info > MIN_VER, f"Python {'.'.join(map(str, MIN_VER))} or higher required!"
+
 MAX_GUESSES = 25
 DEFAULT_GUESSES = 10
 MAX_DIGITS = 6
