@@ -8,6 +8,7 @@ DEFAULT_GUESSES = 10
 MAX_DIGITS = 6
 MIN_DIGITS = 2
 DEFAULT_DIGITS = 4
+allow_repeats = True
 
 class Guess:
     def __init__(self, secret: str, guess: str):
@@ -71,12 +72,28 @@ def getIntFromUser(prompt, *, low=1, high=2**31, attempts=3, default=None):
     print(f"I'm sorry but you've used {attempts} and I can't ask any more.")
     return None
 
+def getSecret(num_digits, allow_repeats):
+    if allow_repeats:
+        return str(random.randrange(10**(num_digits-1), 10**num_digits))
+    secret = []
+    while len(secret) < num_digits:
+        n = random.randrange(0,10)
+        if n not in secret:
+            secret.append(n)
+    return ''.join(map(str, secret))
+
 
 def game():
     guesses = 0
     digits = 0
     count = 0
     history = []
+    repeat_strings = ['are not', 'are']
+    global allow_repeats
+
+    if input(f"Repeated digits {repeat_strings[allow_repeats]} currently allowed. Do you want to change this (y/N)?").lower().strip() == 'y':
+        allow_repeats = not allow_repeats
+
     if not (guesses := getIntFromUser(f"How many guesses would you like? Please enter a number from 1 - {MAX_GUESSES} ({DEFAULT_GUESSES})", 
                                      low=1, high=MAX_GUESSES, default=DEFAULT_GUESSES)):
         print("Goodbye.")
@@ -88,7 +105,7 @@ def game():
         print("Goodbye.")
         sys.exit(1)
     print (f"OK! We've got a game to play!")
-    secret = str(random.randrange(10**(digits-1), 10**digits))
+    secret = getSecret(digits, allow_repeats)
     while True:
         count = 0
         read = input(f"You've got {guesses} left to guess my {digits} digit number. Type 'h' to see the history or let me know what your guess is.  ")
@@ -132,6 +149,6 @@ def game():
             print(f"YEAH!!! I WIN!!! You couldn't guess my secret number! It was {secret}")
             return
 
-while input('Do you want to play a game with me (y/N)? ').lower() == 'y':
+while input('Do you want to play a game with me (y/N)? ').lower().strip() == 'y':
     game()
     
