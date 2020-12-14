@@ -273,10 +273,53 @@ As a reminder, digits {repeat_strings[allow_repeats]} to repeat and only the dig
             print(f"YEAH!!! I WIN!!! You couldn't guess my secret number! It was {secret}")
             return
 
+def help():
+    '''
+        Prints the help for the game.
+    '''
+    print(f'''
+Hello and welcome to Mastermind.py.
+Mastermind.py is a guessing game. Your goal is to guess my secret number. 
+But don't worry - I'll let you help me pick the secret number. You can tell me:
+    How long my number should be
+    Whether I can repeat digits in it
+    How many different digits can be in the number
+
+For example, let's say you just want a 4 digit number, I'll pick a number between 1000 and 9999. 
+But if you tell me I can't repeat digits then numbers like 9999 are out of the question and I'll
+pick something like 1234.
+
+You also get to tell me how many guesses you want. You can pick anywhere from 1 to {MAX_GUESSES}.
+
+I'll also help you out. Every time you make a guess I'll tell you how many digits were correct,
+and how many were close (the digit is in the number just not where you think it is.)
+For example, lets say my numbers is '5324' and you guessed '1234', I'll let you know how
+you did by showing you this:
+
+        {Guess('1324', '1254')}
+
+Every 'X' means you have a digit in the correct place. Every 'O' means you have a digit in the
+number but not in the reight place. Any digit that's not in my number is represented by a '-'.
+But don't get confused! The 'X'es and 'O'es don't tell you which digit it is! In that example
+the 1 and 4 were correct and the 2 was close but the 'X'es and 'O'es aren't in that order.
+
+You can always take a look back at what the guesses were so far (and how close you were) by
+selecting H when I ask you for a guess.
+
+One last thing, I won't let you guess a number that is too long or too short, but I also won't
+tell you if you guessed a digit that's not in the game.
+
+Good luck!
+          ''')
+
+
 # Keep playing until the user says enough.
 while True:
+    print ("Press H for help.")
     if (read := input('Do you want to play a game with me (y/N)? ').lower().strip()) == 'y':
         game()
+    elif read == 'h':
+        help()
     else:
         sys.exit(0)    
     
