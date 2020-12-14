@@ -47,48 +47,50 @@ class Guess:
     def close(self):
         return self.res['close']
 
+
+def getIntFromUser(prompt, *, low=1, high=2**31, attempts=3, default=None):
+    num = 0
+    count = attempts + 1
+    while not num and (count := count - 1):
+        read = input(prompt + '  ')
+        if not read:
+            if default:
+                return default
+            continue
+        try:
+            num = int(read)
+            if num >= low and num <= high:
+                return num
+            s = 'low'
+            if num > high:
+                s = 'high'
+            print (f"I'm sorry but {num} is too {s}. It needs to be between {low} and {high}.")
+            num = 0
+        except ValueError:
+            print(f"I'm sorry but {read!r} is not a number.")
+    print(f"I'm sorry but you've used {attempts} and I can't ask any more.")
+    return None
+
+
 def game():
     guesses = 0
     digits = 0
     count = 0
     history = []
-    while guesses <= 0:
-        read = input(f"How many guesses would you like? Please enter a number from 1 - {MAX_GUESSES} ({DEFAULT_GUESSES}) ")
-        if not read:
-            guesses = DEFAULT_GUESSES
-        else:
-            try:
-                guesses = int(read)
-                if guesses > MAX_GUESSES:
-                    print(f"Hey! I said you could go as high as {MAX_GUESSES}! {guesses} is too much!")
-                    guesses = 0
-            except ValueError:
-                print(f"Hey! {read} is not a number!")
-                if (count := count + 1) >= 3:
-                    guesses = DEFAULT_GUESSES
+    if not (guesses := getIntFromUser(f"How many guesses would you like? Please enter a number from 1 - {MAX_GUESSES} ({DEFAULT_GUESSES})", 
+                                     low=1, high=MAX_GUESSES, default=DEFAULT_GUESSES)):
+        print("Goodbye.")
+        sys.exit(1)
     print(f"OK. So we're going to give you {guesses} to try to solve my number!")
     count = 0
-    while digits <= 0:
-        read = input(f"How long a problem do you want? Please enter a number from {MIN_DIGITS} - {MAX_DIGITS} ({DEFAULT_DIGITS})  ")
-        if not read:
-            digits = DEFAULT_DIGITS
-        else:
-            try:
-                digits = int(read)
-                if digits > MAX_DIGITS:
-                    print(f"Hey! I said you could go as high as {MAX_DIGITS}! {digits} is too much!")
-                    digits = 0
-                if digits < MIN_DIGITS:
-                    print(f"I'm sorry but {digits} is not long enough! It has to be at least {MIN_DIGITS} long.")
-                    digits = 0
-            except ValueError:
-                print(f"Hey! {read} is not a number!")
-                if (count := count + 1) >= 3:
-                    digits = DEFAULT_DIGITS
+    if not (digits := getIntFromUser(f"How long a problem do you want? Please enter a number from {MIN_DIGITS} - {MAX_DIGITS} ({DEFAULT_DIGITS})",
+                                    low=MIN_DIGITS, high=MAX_DIGITS, default=DEFAULT_DIGITS)):
+        print("Goodbye.")
+        sys.exit(1)
     print (f"OK! We've got a game to play!")
-    count = 0
     secret = str(random.randrange(10**(digits-1), 10**digits))
     while True:
+        count = 0
         read = input(f"You've got {guesses} left to guess my {digits} digit number. Type 'h' to see the history or let me know what your guess is.  ")
         if not read:
             read = input("You sure you want to quit (Y/n)?  ")
